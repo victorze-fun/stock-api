@@ -1,13 +1,10 @@
-package com.victorze.stock;
+package com.victorze.stock.models;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 
 @Data
 @AllArgsConstructor
@@ -22,5 +19,9 @@ public class Product {
     private String name;
 
     private float price;
+
+    @ManyToOne
+    @JoinColumn(name="category_id")
+    private Category category;
 
 }
