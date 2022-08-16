@@ -1,8 +1,10 @@
 package com.victorze.stock.controllers;
 
+import com.fasterxml.jackson.databind.JsonMappingException;
 import com.victorze.stock.dto.CreateProductDTO;
 import com.victorze.stock.dto.ProductDTO;
 import com.victorze.stock.dto.converter.ProductDTOConverter;
+import com.victorze.stock.errors.ApiError;
 import com.victorze.stock.errors.ProductNotFoundException;
 import com.victorze.stock.models.Category;
 import com.victorze.stock.models.Product;
@@ -13,6 +15,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -73,6 +76,24 @@ public class ProductController {
                 .orElseThrow(() -> new ProductNotFoundException(id));
         productRepository.delete(product);
         return ResponseEntity.noContent().build();
+    }
+
+    @ExceptionHandler(ProductNotFoundException.class)
+    public ResponseEntity<ApiError> handleProductNotFound(ProductNotFoundException ex) {
+        var apiError = new ApiError();
+        apiError.setStatus(HttpStatus.NOT_FOUND);
+        apiError.setDate(LocalDateTime.now());
+        apiError.setMessage(ex.getMessage());
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(apiError);
+    }
+
+    @ExceptionHandler(JsonMappingException.class)
+    public ResponseEntity<ApiError> handleJsonMappingException(JsonMappingException ex) {
+        var apiError = new ApiError();
+        apiError.setStatus(HttpStatus.BAD_REQUEST);
+        apiError.setDate(LocalDateTime.now());
+        apiError.setMessage(ex.getMessage());
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(apiError);
     }
 
 }
