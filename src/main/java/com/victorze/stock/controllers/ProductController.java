@@ -3,6 +3,7 @@ package com.victorze.stock.controllers;
 import com.victorze.stock.dto.CreateProductDTO;
 import com.victorze.stock.dto.ProductDTO;
 import com.victorze.stock.dto.converter.ProductDTOConverter;
+import com.victorze.stock.errors.ProductNotFoundException;
 import com.victorze.stock.models.Category;
 import com.victorze.stock.models.Product;
 import com.victorze.stock.repositories.CategoryRepository;
@@ -39,14 +40,9 @@ public class ProductController {
     }
 
     @GetMapping("/products/{id}")
-    public ResponseEntity<?> getProduct(@PathVariable Long id) {
-        Product result = productRepository.findById(id).orElse(null);
-
-        if (result == null) {
-            return ResponseEntity.notFound().build();
-        } else {
-            return ResponseEntity.ok(result);
-        }
+    public Product getProduct(@PathVariable Long id) {
+        return productRepository.findById(id)
+                .orElseThrow(() -> new ProductNotFoundException(id));
     }
 
     @PostMapping("/products")
@@ -56,11 +52,11 @@ public class ProductController {
     }
 
     @PutMapping("/products/{id}")
-    public ResponseEntity<?> editProduct(@RequestBody CreateProductDTO createProductDTO, @PathVariable Long id) {
+    public Product editProduct(@RequestBody CreateProductDTO createProductDTO, @PathVariable Long id) {
         return productRepository.findById(id).map(p -> {
             Product product = dtoToProduct(createProductDTO, p);
-            return ResponseEntity.ok(productRepository.save(product));
-        }).orElseGet(() -> ResponseEntity.notFound().build());
+            return productRepository.save(product);
+        }).orElseThrow(() -> new ProductNotFoundException(id));
     }
 
     private Product dtoToProduct(CreateProductDTO createProductDTO, Product product) {
@@ -73,11 +69,10 @@ public class ProductController {
 
     @DeleteMapping("/products/{id}")
     public ResponseEntity<?> deleteProduct(@PathVariable Long id) {
-        try {
-            productRepository.deleteById(id);
-        } finally {
-            return ResponseEntity.noContent().build();
-        }
+        Product product = productRepository.findById(id)
+                .orElseThrow(() -> new ProductNotFoundException(id));
+        productRepository.delete(product);
+        return ResponseEntity.noContent().build();
     }
 
 }
