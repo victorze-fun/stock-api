@@ -1,10 +1,8 @@
 package com.victorze.stock.controllers;
 
-import com.fasterxml.jackson.databind.JsonMappingException;
 import com.victorze.stock.dto.CreateProductDTO;
 import com.victorze.stock.dto.ProductDTO;
 import com.victorze.stock.dto.converter.ProductDTOConverter;
-import com.victorze.stock.errors.ApiError;
 import com.victorze.stock.errors.ProductNotFoundException;
 import com.victorze.stock.models.Category;
 import com.victorze.stock.models.Product;
@@ -15,7 +13,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
