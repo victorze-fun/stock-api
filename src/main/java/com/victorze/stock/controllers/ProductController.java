@@ -78,24 +78,4 @@ public class ProductController {
         return ResponseEntity.noContent().build();
     }
 
-    @ExceptionHandler(ProductNotFoundException.class)
-    public ResponseEntity<ApiError> handleProductNotFound(ProductNotFoundException ex) {
-        ApiError apiError = createApiError(HttpStatus.NOT_FOUND, ex.getMessage());
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(apiError);
-    }
-
-    @ExceptionHandler(JsonMappingException.class)
-    public ResponseEntity<ApiError> handleJsonMappingException(JsonMappingException ex) {
-        ApiError apiError = createApiError(HttpStatus.BAD_REQUEST, ex.getMessage());
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(apiError);
-    }
-
-    private ApiError createApiError(HttpStatus httpStatus, String message) {
-        ApiError apiError = new ApiError();
-        apiError.setStatus(httpStatus);
-        apiError.setDate(LocalDateTime.now());
-        apiError.setMessage(message);
-        return apiError;
-    }
-
 }
