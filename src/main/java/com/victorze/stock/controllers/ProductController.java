@@ -5,6 +5,7 @@ import java.util.stream.Collectors;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -33,6 +34,7 @@ public class ProductController {
     private final CategoryRepository categoryRepository;
     private final ProductDTOConverter productDTOConverter;
 
+    // @CrossOrigin(origins = "http://127.0.0.1:5500/")
     @GetMapping("/products")
     public ResponseEntity<?> getAll() {
         List<Product> result = productRepository.findAll();
